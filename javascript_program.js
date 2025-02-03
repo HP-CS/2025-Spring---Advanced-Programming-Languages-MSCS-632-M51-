@@ -1,0 +1,17 @@
+function calculateSum(arr) {
+    let total = 0;  // Initialize total to 0
+    for (let num of arr) {
+        total += num;
+    }
+    return total;
+}
+
+let numbers = [1, 2, 3, 4, 5];
+let result = calculateSum(numbers);
+console.log("Sum in JavaScript:", result);
+
+let arr = [1, 2, 3, 4];
+console.log("Original array:", arr);
+
+arr.push(5);  // Dynamically adding an element
+console.log("Updated array:", arr);
