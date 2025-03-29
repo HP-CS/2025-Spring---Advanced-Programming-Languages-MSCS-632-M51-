@@ -1,0 +1,124 @@
+Object subclass: #Ride
+	instanceVariableNames: 'rideID pickupLocation dropoffLocation distance'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RideSharing'.
+
+Ride >> initializeWithID: id pickup: pickup dropoff: dropoff distance: dist
+	rideID := id.
+	pickupLocation := pickup.
+	dropoffLocation := dropoff.
+	distance := dist.
+
+Ride >> rideDetails
+	Transcript show: 'Ride ID: ', rideID; cr.
+	Transcript show: 'Pickup: ', pickupLocation; cr.
+	Transcript show: 'Dropoff: ', dropoffLocation; cr.
+	Transcript show: 'Distance: ', distance printString, ' miles'; cr.
+
+Ride >> fare
+	self subclassResponsibility.
+
+
+" StandardRide subclass "
+Ride subclass: #StandardRide
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RideSharing'.
+
+StandardRide >> fare
+	^distance * 1.5.
+
+StandardRide >> rideDetails
+	super rideDetails.
+	Transcript show: 'Type: Standard Ride'; cr.
+	Transcript show: 'Fare: $', self fare printString; cr; cr.
+
+
+" PremiumRide subclass "
+Ride subclass: #PremiumRide
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RideSharing'.
+
+PremiumRide >> fare
+	^distance * 3.0.
+
+PremiumRide >> rideDetails
+	super rideDetails.
+	Transcript show: 'Type: Premium Ride'; cr.
+	Transcript show: 'Fare: $', self fare printString; cr; cr.
+
+
+" Driver class "
+Object subclass: #Driver
+	instanceVariableNames: 'driverID name rating assignedRides'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RideSharing'.
+
+Driver >> initializeWithID: id name: driverName rating: r
+	driverID := id.
+	name := driverName.
+	rating := r.
+	assignedRides := OrderedCollection new.
+
+Driver >> addRide: aRide
+	assignedRides add: aRide.
+
+Driver >> getDriverInfo
+	Transcript show: 'Driver ID: ', driverID; cr.
+	Transcript show: 'Name: ', name; cr.
+	Transcript show: 'Rating: ', rating printString; cr.
+	Transcript show: 'Assigned Rides: ', assignedRides size printString; cr; cr.
+
+
+" Rider class "
+Object subclass: #Rider
+	instanceVariableNames: 'riderID name requestedRides'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'RideSharing'.
+
+Rider >> initializeWithID: id name: n
+	riderID := id.
+	name := n.
+	requestedRides := OrderedCollection new.
+
+Rider >> requestRide: aRide
+	requestedRides add: aRide.
+
+Rider >> viewRides
+	Transcript show: 'Rider ID: ', riderID; cr.
+	Transcript show: 'Name: ', name; cr.
+	Transcript show: 'Requested Rides:'; cr.
+	requestedRides do: [:r | r rideDetails].
+
+
+| ride1 ride2 driver rider rideList |
+ride1 := StandardRide new.
+ride1 initializeWithID: 'R001' pickup: 'Downtown' dropoff: 'Uptown' distance: 5.
+
+ride2 := PremiumRide new.
+ride2 initializeWithID: 'R002' pickup: 'Airport' dropoff: 'Hotel' distance: 10.
+
+driver := Driver new.
+driver initializeWithID: 'D001' name: 'Alice' rating: 4.9.
+driver addRide: ride1.
+driver addRide: ride2.
+
+rider := Rider new.
+rider initializeWithID: 'U001' name: 'Bob'.
+rider requestRide: ride1.
+rider requestRide: ride2.
+
+rideList := {ride1. ride2}.
+rideList do: [:r | r rideDetails].
+
+Transcript show: '--- Driver Info ---'; cr.
+driver getDriverInfo.
+
+Transcript show: '--- Rider Ride History ---'; cr.
+rider viewRides.
